@@ -1261,5 +1261,56 @@ Scoreboard, job info, dan sistem KTP cetak dengan foto siap mendukung RP-mu seca
 
     <!-- Custom JavaScript -->
     <script src="js/main.js"></script>
+    
+<div class="audio-controls fixed bottom-4 right-4 flex items-center gap-2 bg-vice-gray/80 backdrop-blur-md p-2 rounded-full border border-vice-pink/20 z-50">
+    <button id="muteBtn" class="w-8 h-8 flex items-center justify-center text-vice-pink hover:text-vice-cyan transition-colors">
+        <i class="ri-volume-up-fill text-xl" id="volumeIcon"></i>
+    </button>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.3" 
+           class="w-24 accent-vice-pink hover:accent-vice-cyan transition-colors">
+</div>
+
+<audio id="bgm" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const bgm = document.getElementById('bgm');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const muteBtn = document.getElementById('muteBtn');
+    const volumeIcon = document.getElementById('volumeIcon');
+    let started = false;
+    bgm.volume = 0.3;
+    volumeSlider.addEventListener('input', () => {
+        bgm.volume = volumeSlider.value;
+        bgm.muted = false;
+        updateVolumeIcon();
+    });
+    muteBtn.addEventListener('click', () => {
+        bgm.muted = !bgm.muted;
+        updateVolumeIcon();
+    });
+
+    function updateVolumeIcon() {
+        if (bgm.muted || bgm.volume == 0) {
+            volumeIcon.className = 'ri-volume-mute-fill text-xl';
+        } else if (bgm.volume < 0.5) {
+            volumeIcon.className = 'ri-volume-down-fill text-xl';
+        } else {
+            volumeIcon.className = 'ri-volume-up-fill text-xl';
+        }
+    }
+    document.body.addEventListener('click', () => {
+        if (!started) {
+            bgm.play().then(() => {
+                started = true;
+            }).catch(err => {
+                console.error("Playback failed", err);
+                alert("Klik izinkan jika browser meminta permission audio");
+            });
+        }
+    });
+    updateVolumeIcon();
+</script>
 </body>
 </html>
